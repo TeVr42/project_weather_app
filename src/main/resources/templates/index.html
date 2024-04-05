@@ -1,12 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World Page</title>
+    <title>Weather Forecast</title>
 </head>
 <body>
-<h1>Hello, world!</h1>
-<p>Konečně to funguje!</p>
+<h1>Předpověď počasí</h1>
+<h2>Informace o poloze</h2>
+<p>Location: <span th:text="${weatherData.getLocation().getName()}"></span></p>
+<p>Region: <span th:text="${weatherData.getLocation().getRegion()}"></span></p>
+<p>Country: <span th:text="${weatherData.getLocation().getCountry()}"></span></p>
+
+<h2>Podmínky počasí</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Čas</th>
+        <th>Text</th>
+        <th>Teplota (°C)</th>
+        <th>Ikona</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="condition : ${weatherData.getConditions()}">
+        <td th:text="${condition.getFormattedTime()}"></td>
+        <td th:text="${condition.getText()}"></td>
+        <td th:text="${condition.getTemp_c()}"></td>
+        <td>
+            <img th:src="@{${condition.getIcon()}}" alt="Weather Icon" />
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

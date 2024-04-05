@@ -53,7 +53,7 @@ public class WeatherJSONService {
 
             for (JsonNode hourForecast : hourNode) {
                 WeatherCondition weatherCondition = createWeatherCondition(hourForecast, "time_epoch");
-                Date date = new Date(weatherCondition.getEpochTime());
+                Date date = new Date(weatherCondition.getEpochTime() *1000);
                 int hour = date.getHours();
                 if (hour % 6 == 0) {
                     weatherConditions.add(weatherCondition);
