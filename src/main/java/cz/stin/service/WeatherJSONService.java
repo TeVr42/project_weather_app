@@ -12,7 +12,7 @@ import java.util.List;
 
 public class WeatherJSONService {
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     public WeatherJSONService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -23,7 +23,7 @@ public class WeatherJSONService {
         JsonNode currentWeatherNode = rootNode.get("current");
 
         Location location = createLocation(locationNode);
-        WeatherCondition currentWeather = createWeatherCondition(currentWeatherNode);
+        WeatherCondition currentWeather = createWeatherCondition(currentWeatherNode, "last_updated_epoch");
 
         WeatherData weatherData = new WeatherData();
         weatherData.setLocation(location);
@@ -35,13 +35,31 @@ public class WeatherJSONService {
         return weatherData;
     }
 
-    public WeatherData transformForecastJSON(String json) {
-        return null;
+    public WeatherData transformForecastJSON(String json) throws JsonProcessingException {
+        JsonNode rootNode = objectMapper.readTree(json);
+        JsonNode locationNode = rootNode.get("location");
+        JsonNode forecastNode = rootNode.get("forecast");
+        JsonNode dayNodes = forecastNode.get("forecastday");
+
+        Location location = createLocation(locationNode);
+        WeatherData weatherData = new WeatherData();
+        weatherData.setLocation(location);
+
+        List<WeatherCondition> weatherConditions = new ArrayList<>();
+
+        for (JsonNode dayNode : dayNodes) {
+            JsonNode hourNode = dayNode.get("hour");
+
+            for (JsonNode hourForecast : hourNode) {
+                WeatherCondition weatherCondition = createWeatherCondition(hourForecast, "time_epoch");
+                weatherConditions.add(weatherCondition);
+            }
+        }
+        weatherData.setConditions(weatherConditions);
+
+        return weatherData;
     }
 
-    public WeatherData transformHistoryJSON(String json) {
-        return null;
-    }
     private Location createLocation(JsonNode locationNode) {
         String name = locationNode.get("name").asText();
         String region = locationNode.get("region").asText();
@@ -55,15 +73,17 @@ public class WeatherJSONService {
         return location;
     }
 
-    private WeatherCondition createWeatherCondition(JsonNode weatherNode) {
+    private WeatherCondition createWeatherCondition(JsonNode weatherNode, String timeName) {
         double tempC = weatherNode.get("temp_c").asDouble();
         String text = weatherNode.get("condition").get("text").asText();
         String icon = weatherNode.get("condition").get("icon").asText();
+        long time = weatherNode.get(timeName).asLong();
 
         WeatherCondition weatherCondition = new WeatherCondition();
         weatherCondition.setTemp_c(tempC);
         weatherCondition.setText(text);
         weatherCondition.setIcon(icon);
+        weatherCondition.setEpochTime(time);
 
         return weatherCondition;
     }

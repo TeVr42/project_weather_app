@@ -22,6 +22,10 @@ public class WeatherAPIService {
         return getWeatherData(location, "forecast");
     }
 
+    public String getForecastWeather(String location, String date) {
+        return getWeatherData(location, "forecast", date);
+    }
+
     public String getHistoricalWeather(String location, String date) {
         return getWeatherData(location, "history", date);
     }
@@ -39,10 +43,14 @@ public class WeatherAPIService {
         }
 
         if (weatherType.equals("history")) {
-            builder.queryParam("q", location);
+            builder.queryParam("end_dt", "2024-04-05");
             if (date == null) {
                 throw new IllegalArgumentException("Date parameter is required for historical weather");
             }
+        }
+
+        if (weatherType.equals("forecast")) {
+            builder.queryParam("days", 3);
         }
 
         ResponseEntity<String> response = restTemplate.getForEntity(builder.buildAndExpand(weatherType).toUri(), String.class);
