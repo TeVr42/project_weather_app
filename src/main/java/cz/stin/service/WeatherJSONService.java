@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class WeatherJSONService {
@@ -52,7 +53,11 @@ public class WeatherJSONService {
 
             for (JsonNode hourForecast : hourNode) {
                 WeatherCondition weatherCondition = createWeatherCondition(hourForecast, "time_epoch");
-                weatherConditions.add(weatherCondition);
+                Date date = new Date(weatherCondition.getEpochTime());
+                int hour = date.getHours();
+                if (hour % 6 == 0) {
+                    weatherConditions.add(weatherCondition);
+                }
             }
         }
         weatherData.setConditions(weatherConditions);

@@ -4,6 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class WeatherAPIService {
 
     private final RestTemplate restTemplate;
@@ -26,6 +29,15 @@ public class WeatherAPIService {
         return getWeatherData(location, "forecast", date);
     }
 
+    public String getHistoricalWeather(String location) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate fiveDaysAgoDate = currentDate.minusDays(5);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = fiveDaysAgoDate.format(formatter);
+
+        return getWeatherData(location, "history", formattedDate);
+    }
+
     public String getHistoricalWeather(String location, String date) {
         return getWeatherData(location, "history", date);
     }
@@ -36,14 +48,18 @@ public class WeatherAPIService {
 
     private String getWeatherData(String location, String weatherType, String date) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("http://api.weatherapi.com/v1/{weatherType}.json")
-                .queryParam("key", apiKey).queryParam("q", location);
+                .queryParam("key", apiKey).queryParam("q", location).queryParam("lang","cs");
 
         if (date != null) {
             builder.queryParam("dt", date);
         }
 
         if (weatherType.equals("history")) {
-            builder.queryParam("end_dt", "2024-04-05");
+            LocalDate currentDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String formattedCurrentDate = currentDate.format(formatter);
+            builder.queryParam("end_dt", formattedCurrentDate);
+
             if (date == null) {
                 throw new IllegalArgumentException("Date parameter is required for historical weather");
             }
