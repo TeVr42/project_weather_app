@@ -19,7 +19,7 @@ public class RequestControllerTest {
     private MockMvc mvc;
     @Test
     void getHello() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/api").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.get("/hello").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(equalTo("Hello world")));
     }
