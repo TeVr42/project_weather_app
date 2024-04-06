@@ -3,48 +3,62 @@ package cz.stin.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import cz.stin.model.Location;
 import cz.stin.model.WeatherCondition;
-import cz.stin.model.WeatherData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import cz.stin.model.WeatherModel;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class WeatherJSONService {
+@Component
+public class JSONTransformService {
 
     private final ObjectMapper objectMapper;
 
-    public WeatherJSONService(ObjectMapper objectMapper) {
+    public JSONTransformService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
-    public WeatherData transformCurrentJSON(String json) throws JsonProcessingException {
+    public WeatherModel transformCurrentJSON(String json, WeatherModel wmodel) throws JsonProcessingException {
         JsonNode rootNode = objectMapper.readTree(json);
-        JsonNode locationNode = rootNode.get("location");
-        JsonNode currentWeatherNode = rootNode.get("current");
 
-        Location location = createLocation(locationNode);
+        addLocation(json, wmodel);
+
+        JsonNode currentWeatherNode = rootNode.get("current");
         WeatherCondition currentWeather = createWeatherCondition(currentWeatherNode, "last_updated_epoch");
 
-        WeatherData weatherData = new WeatherData();
-        weatherData.setLocation(location);
+        wmodel.setCurrent(currentWeather);
 
-        List<WeatherCondition> weatherConditions = new ArrayList<>();
-        weatherConditions.add(currentWeather);
-        weatherData.setConditions(weatherConditions);
-
-        return weatherData;
+        return wmodel;
     }
 
-    public WeatherData transformForecastJSON(String json) throws JsonProcessingException {
+    public WeatherModel transformForecastJSON(String json, WeatherModel wmodel) throws JsonProcessingException {
+        addLocation(json, wmodel);
+        wmodel.setForecast(createConditions(json));
+        return wmodel;
+    }
+
+    public WeatherModel transformHistoryJSON(String json, WeatherModel wmodel) throws JsonProcessingException {
+        addLocation(json, wmodel);
+        wmodel.setHistory(createConditions(json));
+        return wmodel;
+    }
+
+    private WeatherModel addLocation(String json, WeatherModel wmodel) throws JsonProcessingException {
         JsonNode rootNode = objectMapper.readTree(json);
-        JsonNode locationNode = rootNode.get("location");
+        if (wmodel.getLocation() == null) {
+            JsonNode locationNode = rootNode.get("location");
+            Location location = createLocation(locationNode);
+            wmodel.setLocation(location);
+        }
+        return wmodel;
+    }
+
+    private List<WeatherCondition> createConditions(String json) throws JsonProcessingException {
+        JsonNode rootNode = objectMapper.readTree(json);
         JsonNode forecastNode = rootNode.get("forecast");
         JsonNode dayNodes = forecastNode.get("forecastday");
-
-        Location location = createLocation(locationNode);
-        WeatherData weatherData = new WeatherData();
-        weatherData.setLocation(location);
 
         List<WeatherCondition> weatherConditions = new ArrayList<>();
 
@@ -60,9 +74,8 @@ public class WeatherJSONService {
                 }
             }
         }
-        weatherData.setConditions(weatherConditions);
 
-        return weatherData;
+        return weatherConditions;
     }
 
     private Location createLocation(JsonNode locationNode) {
@@ -92,4 +105,6 @@ public class WeatherJSONService {
 
         return weatherCondition;
     }
+
+    // model v parametru a přidat info z JSON, pote třída co bude hromadně vytvářet weathermodel se vším všudy
 }

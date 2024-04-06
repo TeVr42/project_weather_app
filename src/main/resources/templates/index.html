@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Weather Forecast</title>
-</head>
-<body>
-<h1>Předpověď počasí</h1>
-<h2>Informace o poloze</h2>
-<p>Location: <span th:text="${weatherData.getLocation().getName()}"></span></p>
-<p>Region: <span th:text="${weatherData.getLocation().getRegion()}"></span></p>
-<p>Country: <span th:text="${weatherData.getLocation().getCountry()}"></span></p>
 
-<h2>Podmínky počasí</h2>
+<head th:include="header :: head">
+    <!-- header.html -->
+</head>
+
+<body>
+<img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
+<h1>Aktuální počasí</h1>
+<p>
+    V místě: <strong><span th:text="${wmodel.getLocation().getName()}"></span></strong>
+    (<span th:text="${wmodel.getLocation().getRegion()}"></span>,
+    <span th:text="${wmodel.getLocation().getCountry()}"></span>)
+    <br>
+
+    je aktuálně: (<span th:text="${wmodel.getCurrent().getFormattedTime()}"></span>)<br>
+    <strong><span th:text="${wmodel.getCurrent().getText()}"></span>
+    <span th:text="${wmodel.getCurrent().getTemp_c()}"></span>°C</strong>
+    <span>
+        <img th:src="@{${wmodel.getCurrent().getIcon()}}" alt="Weather Icon" />
+    </span>
+</p>
+
+<h1>Předpověď počasí</h1>
 <table>
     <thead>
     <tr>
@@ -22,7 +33,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="condition : ${weatherData.getConditions()}">
+    <tr th:each="condition : ${wmodel.getForecast()}">
         <td th:text="${condition.getFormattedTime()}"></td>
         <td th:text="${condition.getText()}"></td>
         <td th:text="${condition.getTemp_c()}"></td>

@@ -1,0 +1,9 @@
+body {
+    margin: 3rem;
+    text-align: center;
+}
+
+.img-logo {
+    width: 6rem;
+    border-radius: 100%;
+}
