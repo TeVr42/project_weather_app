@@ -20,7 +20,7 @@ public class JSONTransformService {
     public JSONTransformService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
-    public WeatherModel transformCurrentJSON(String json, WeatherModel wmodel) throws JsonProcessingException {
+    public void transformCurrentJSON(String json, WeatherModel wmodel) throws JsonProcessingException {
         JsonNode rootNode = objectMapper.readTree(json);
 
         addLocation(json, wmodel);
@@ -29,30 +29,25 @@ public class JSONTransformService {
         WeatherCondition currentWeather = createWeatherCondition(currentWeatherNode, "last_updated_epoch");
 
         wmodel.setCurrent(currentWeather);
-
-        return wmodel;
     }
 
-    public WeatherModel transformForecastJSON(String json, WeatherModel wmodel) throws JsonProcessingException {
+    public void transformForecastJSON(String json, WeatherModel wmodel) throws JsonProcessingException {
         addLocation(json, wmodel);
         wmodel.setForecast(createConditions(json));
-        return wmodel;
     }
 
-    public WeatherModel transformHistoryJSON(String json, WeatherModel wmodel) throws JsonProcessingException {
+    public void transformHistoryJSON(String json, WeatherModel wmodel) throws JsonProcessingException {
         addLocation(json, wmodel);
         wmodel.setHistory(createConditions(json));
-        return wmodel;
     }
 
-    private WeatherModel addLocation(String json, WeatherModel wmodel) throws JsonProcessingException {
+    private void addLocation(String json, WeatherModel wmodel) throws JsonProcessingException {
         JsonNode rootNode = objectMapper.readTree(json);
         if (wmodel.getLocation() == null) {
             JsonNode locationNode = rootNode.get("location");
             Location location = createLocation(locationNode);
             wmodel.setLocation(location);
         }
-        return wmodel;
     }
 
     private List<WeatherCondition> createConditions(String json) throws JsonProcessingException {
@@ -105,6 +100,4 @@ public class JSONTransformService {
 
         return weatherCondition;
     }
-
-    // model v parametru a přidat info z JSON, pote třída co bude hromadně vytvářet weathermodel se vším všudy
 }

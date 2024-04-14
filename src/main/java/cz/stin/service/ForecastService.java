@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ForecastService {
 
-    private WeatherAPIService apiService;
-    private JSONTransformService jsonService;
+    private final WeatherAPIService apiService;
+    private final JSONTransformService jsonService;
 
     public ForecastService(WeatherAPIService apiService, JSONTransformService jsonService) {
         this.apiService = apiService;

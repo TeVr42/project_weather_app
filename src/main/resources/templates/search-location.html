@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="header :: head">
+  <!-- header.html -->
+</head>
+
+<body>
+
+<nav th:include="navbar :: div">
+  <!-- navbar.html -->
+</nav>
+
+<div class="div-whole">
+  <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
+  <h1 class="h1-index">Vyhledat lokalitu</h1>
+  <form action="#" th:action="@{/pocasi}" method="post">
+    <div class="form-group">
+      <input type="location" class="form-control" id="locationInput" name="locationInput" aria-describedby="locationHelp" placeholder="Zadejte lokalitu">
+      <small id="locationHelp" class="form-text text-muted">Zadejte anglickou podobu lokality nebo bez diakritiky</small>
+    </div>
+    <button type="submit" class="btn btn-dark">Zjisti počasí</button>
+  </form>
+
+</div>
+</body>
+</html>

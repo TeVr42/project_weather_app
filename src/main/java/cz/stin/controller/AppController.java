@@ -6,11 +6,13 @@ import cz.stin.service.ForecastService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AppController {
 
-    private ForecastService forecastService;
+    private final ForecastService forecastService;
 
     public AppController(ForecastService forecastService) {
         this.forecastService = forecastService;
@@ -21,4 +23,23 @@ public class AppController {
         model.addAttribute("wmodel", wmodel);
         return "index";
     }
+
+    @GetMapping("/hledat")
+    public String search_location() {
+        return "search-location";
+    }
+
+    @PostMapping("/pocasi")
+    public String weather(@RequestParam("locationInput") String location, Model model) throws JsonProcessingException {
+        WeatherModel wmodel = forecastService.createWeatherModel(location);
+        model.addAttribute("wmodel", wmodel);
+        return "index";
+    }
+
+    @GetMapping("/api-info")
+    public String apiInfo() {
+        return "api-info";
+    }
+
+
 }

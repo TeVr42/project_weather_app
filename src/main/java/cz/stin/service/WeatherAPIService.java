@@ -29,16 +29,7 @@ public class WeatherAPIService {
     }
 
     public String getHistoricalWeather(String location) {
-        LocalDate currentDate = LocalDate.now();
-        LocalDate fiveDaysAgoDate = currentDate.minusDays(5);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String formattedDate = fiveDaysAgoDate.format(formatter);
-
-        return getWeatherData(location, "history", formattedDate);
-    }
-
-    public String getHistoricalWeather(String location, String date) {
-        return getWeatherData(location, "history", date);
+        return getWeatherData(location, "history", formatDateForAPI(LocalDate.now().minusDays(5)));
     }
 
     private String getWeatherData(String location, String weatherType) {
@@ -87,13 +78,15 @@ public class WeatherAPIService {
             builder.queryParam("dt", date);
         }
 
-        LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String formattedCurrentDate = currentDate.format(formatter);
-        builder.queryParam("end_dt", formattedCurrentDate);
+        builder.queryParam("end_dt", formatDateForAPI(LocalDate.now()));
     }
     private void handleForecast(UriComponentsBuilder builder) {
         builder.queryParam("days", 3);
+    }
+
+    private String formatDateForAPI(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return date.format(formatter);
     }
 
 }
