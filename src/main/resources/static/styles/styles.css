@@ -1,9 +1,42 @@
 body {
-    margin: 3rem;
+    margin: 0;
     text-align: center;
+}
+
+p, th, td, .navbar-brand, .nav-item {
+    font-size: 1.2rem;
+}
+
+.div-whole{
+margin: 2rem 18rem;
+}
+
+.h1-index {
+margin: 2rem 0;
+font-size: 2.5rem;
 }
 
 .img-logo {
     width: 6rem;
     border-radius: 100%;
+}
+
+@media screen and (max-width: 1190px) {
+.div-whole{
+margin: 3rem;
+}
+}
+
+@media screen and (max-width: 590px) {
+p, .navbar-brand, .nav-item {
+    font-size: 2.5rem;
+}
+
+th, td {
+    font-size: 2rem;
+}
+
+.h1-index {
+font-size: 5rem;
+}
 }
