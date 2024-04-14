@@ -22,21 +22,18 @@ font-size: 2.5rem;
 }
 
 @media screen and (max-width: 1190px) {
-.div-whole{
-margin: 3rem;
-}
+    .div-whole{
+    margin: 3rem 0.5rem;
+    }
 }
 
 @media screen and (max-width: 590px) {
-p, .navbar-brand, .nav-item {
-    font-size: 2.5rem;
-}
+    th, td {
+        font-size: 0.8rem;
+    }
 
-th, td {
-    font-size: 2rem;
-}
+    .td-icon {
+        width: 2rem;
+    }
 
-.h1-index {
-font-size: 5rem;
-}
 }
