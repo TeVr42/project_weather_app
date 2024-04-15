@@ -23,6 +23,26 @@ public class AppControllerTest {
     }
 
     @Test
+    public void testWeather_ValidLocation() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/pocasi")
+                        .param("locationInput", "Prague"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("index"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("wmodel"))
+                .andExpect(MockMvcResultMatchers.model().attributeHasNoErrors("wmodel"));
+    }
+
+    @Test
+    public void testWeather_UnknownLocation() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.post("/pocasi")
+                        .param("locationInput", "NeexistujiciLokace....."))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("error"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("errorMessage"))
+                .andExpect(MockMvcResultMatchers.model().attribute("errorMessage", "Tuhle lokaci bohužel neznám, zkuste prosím jinou."));
+    }
+
+    @Test
     public void testSearchPage() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/hledat"))
                 .andExpect(MockMvcResultMatchers.status().isOk())

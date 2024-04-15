@@ -48,7 +48,6 @@ public class AppController {
             model.addAttribute("errorMessage", "Při zpracování dat se vyskytla chyba, omlouváme se ale požadevek momentálně nejsme schopni naplnit.");
             return "error";
         }
-
     }
 
     @GetMapping("/api-info")
