@@ -21,4 +21,19 @@ public class AppControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("index"));
     }
+
+    @Test
+    public void testSearchPage() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/hledat"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("search-location"));
+    }
+
+    @Test
+    public void testAPIInfoPage() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/api-info"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("api-info"));
+    }
+
 }
