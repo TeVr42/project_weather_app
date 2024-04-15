@@ -100,4 +100,8 @@ public class JSONTransformService {
 
         return weatherCondition;
     }
+
+    public String weatherToJSON(WeatherModel wmodel) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(wmodel);
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Controller
 public class AppController {
@@ -18,10 +19,15 @@ public class AppController {
         this.forecastService = forecastService;
     }
     @GetMapping("/")
-    public String index(Model model) throws JsonProcessingException {
-        WeatherModel wmodel = forecastService.createWeatherModel("Liberec");
-        model.addAttribute("wmodel", wmodel);
-        return "index";
+    public String index(Model model) {
+        try {
+            WeatherModel wmodel = forecastService.createWeatherModel("Liberec");
+            model.addAttribute("wmodel", wmodel);
+            return "index";
+        } catch (JsonProcessingException e) {
+            model.addAttribute("errorMessage", "Při zpracování dat se vyskytla chyba, omlouváme se ale požadevek momentálně nejsme schopni naplnit.");
+            return "error";
+        }
     }
 
     @GetMapping("/hledat")
@@ -30,14 +36,24 @@ public class AppController {
     }
 
     @PostMapping("/pocasi")
-    public String weather(@RequestParam("locationInput") String location, Model model) throws JsonProcessingException {
-        WeatherModel wmodel = forecastService.createWeatherModel(location);
-        model.addAttribute("wmodel", wmodel);
-        return "index";
+    public String weather(@RequestParam("locationInput") String location, Model model) {
+        try {
+            WeatherModel wmodel = forecastService.createWeatherModel(location);
+            model.addAttribute("wmodel", wmodel);
+            return "index";
+        } catch (HttpClientErrorException e) {
+            model.addAttribute("errorMessage", "Tuhle lokaci bohužel neznám, zkuste prosím jinou.");
+            return "error";
+        } catch (JsonProcessingException e) {
+            model.addAttribute("errorMessage", "Při zpracování dat se vyskytla chyba, omlouváme se ale požadevek momentálně nejsme schopni naplnit.");
+            return "error";
+        }
+
     }
 
     @GetMapping("/api-info")
-    public String apiInfo() {
+    public String apiInfo(Model model) {
+        model.addAttribute("userKey", System.getenv("USER_TOKEN"));
         return "api-info";
     }
 

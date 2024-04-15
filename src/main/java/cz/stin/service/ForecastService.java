@@ -36,4 +36,8 @@ public class ForecastService {
         getHistoryWeather(location, wmodel);
         return wmodel;
     }
+
+    public String getJSONWeather(String location) throws JsonProcessingException {
+        return jsonService.weatherToJSON(createWeatherModel(location));
+    }
 }

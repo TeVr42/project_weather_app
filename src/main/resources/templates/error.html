@@ -15,8 +15,12 @@
   <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
   <h1 class="h1-index">Jejda!</h1>
   <p>
-    Něco se pokazilo...
+    Něco se nepovedlo...
   </p>
+  <p>
+    <span th:text="${errorMessage}"></span>
+  </p>
+  <a th:href="@{/}" class="btn btn-dark btn-lg active" role="button" aria-pressed="true">Domů</a>
 </div>
 </body>
 </html>

@@ -88,5 +88,4 @@ public class WeatherAPIService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return date.format(formatter);
     }
-
 }
