@@ -33,6 +33,3 @@ jobs:
       uses: codecov/codecov-action@v4.0.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        slug: TeVr42/project_weather_app
-        file: ./target/site/jacoco/jacoco.xml
-        version: "v0.1.15"
