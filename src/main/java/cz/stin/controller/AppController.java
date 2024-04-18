@@ -31,7 +31,7 @@ public class AppController {
     }
 
     @GetMapping("/hledat")
-    public String search_location() {
+    public String searchLocation() {
         return "search-location";
     }
 
