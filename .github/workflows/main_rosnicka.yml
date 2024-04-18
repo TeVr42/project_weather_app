@@ -22,6 +22,9 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          USER_TOKEN: ${{ secrets.USER_TOKEN }}
         run: mvn clean install
 
       - name: Upload artifact for deployment job
