@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="~{header :: head}">
+  <!-- header.html -->
+</head>
+
+<body>
+
+<nav th:insert="~{navbar :: div}">
+  <!-- navbar.html -->
+</nav>
+
+<div class="div-whole">
+  <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
+  <h1 class="h1-index">Přístup pro API</h1>
+  <p>
+    Data o počasí ve formátu JSON.
+    <br>
+    Tvůj osobní API klíč: <strong><span th:text="${userKey}"></span></strong>
+    <br>
+    Parametry: <br>
+    <strong>key</strong>: tvůj api klíč<br>
+    <strong>location</strong>: hledaná lokace (bez diakritiky)<br>
+    <a th:href="@{'/api?key=' + ${userKey} + '&location=Liberec'}">Zkus si to zde...</a>
+  </p>
+</div>
+</body>
+</html>

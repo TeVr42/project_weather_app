@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="~{header :: head}">
+  <!-- header.html -->
+</head>
+
+<body>
+
+<nav th:insert="~{navbar :: div}">
+  <!-- navbar.html -->
+</nav>
+
+<div class="div-whole">
+  <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
+  <h1 class="h1-index">Jejda!</h1>
+  <p>
+    Něco se nepovedlo...
+  </p>
+  <p>
+    <span th:text="${errorMessage}"></span>
+  </p>
+  <a th:href="@{/}" class="btn btn-dark btn-lg active" role="button" aria-pressed="true">Domů</a>
+</div>
+</body>
+</html>

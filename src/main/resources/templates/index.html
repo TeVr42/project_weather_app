@@ -1,12 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World Page</title>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="~{header :: head}">
+    <!-- header.html -->
 </head>
+
 <body>
-<h1>Hello, world!</h1>
-<p>Konečně to funguje!</p>
+
+<nav th:insert="~{navbar :: div}">
+    <!-- navbar.html -->
+</nav>
+
+<div class="div-whole">
+<img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
+<h1 class="h1-index">Aktuální počasí</h1>
+<p>
+    V místě: <strong><span th:text="${wmodel.getLocation().getName()}"></span></strong>
+    (<span th:text="${wmodel.getLocation().getRegion()}"></span>,
+    <span th:text="${wmodel.getLocation().getCountry()}"></span>)
+    <br>
+
+    je aktuálně: (<span th:text="${wmodel.getCurrent().getFormattedTime()}"></span>)<br>
+    <strong><span th:text="${wmodel.getCurrent().getText()}"></span>
+    <span th:text="${wmodel.getCurrent().getTemp_c()}"></span>°C</strong>
+    <span>
+        <img th:src="@{${wmodel.getCurrent().getIcon()}}" alt="Weather Icon" />
+    </span>
+</p>
+
+<h1 class="h1-index">Předpověď počasí</h1>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Čas</th>
+        <th scope="col">Stav</th>
+        <th scope="col">Teplota (°C)</th>
+        <th scope="col">Ikona</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="condition, iterStat : ${wmodel.getForecast()}">
+        <td th:text="${condition.getFormattedTime()}"></td>
+        <td th:text="${condition.getText()}"></td>
+        <td th:text="${condition.getTemp_c()}"></td>
+        <td>
+            <img th:src="@{${condition.getIcon()}}" class="td-icon" alt="Weather Icon" />
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<h1 class="h1-index">Historie počasí</h1>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Čas</th>
+        <th scope="col">Stav</th>
+        <th scope="col">Teplota (°C)</th>
+        <th scope="col">Ikona</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="condition, iterStat : ${wmodel.getHistory()}">
+        <td th:text="${condition.getFormattedTime()}"></td>
+        <td th:text="${condition.getText()}"></td>
+        <td th:text="${condition.getTemp_c()}"></td>
+        <td>
+            <img th:src="@{${condition.getIcon()}}" class="td-icon" alt="Weather Icon" />
+        </td>
+    </tr>
+    </tbody>
+</table>
+</div>
 </body>
 </html>
