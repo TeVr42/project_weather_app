@@ -18,6 +18,7 @@ public class RequestControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
     @Test
     void getHello() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/hello").accept(MediaType.APPLICATION_JSON))

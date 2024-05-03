@@ -15,6 +15,10 @@ public class RequestController {
         this.forecastService = forecastService;
     }
 
+    @RequestMapping("/hello")
+    public String hello() {
+        return "Hello world";
+    }
 
     @RequestMapping(value = "/api", method = RequestMethod.GET)
     public String weatherAPI(String key, String location) {
