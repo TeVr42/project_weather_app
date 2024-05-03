@@ -66,6 +66,31 @@ public class AppController {
         return "login";
     }
 
+    @PostMapping("/prihlaseni")
+    public String login(
+            @RequestParam("usernameInput") String username,
+            @RequestParam("passwordInput") String password,
+            Model model) {
+
+        if (!InputValidators.isValidUsername(username)) {
+            model.addAttribute("message", "Neplatné číslo uživatelské jméno, může obsahovat pouze malá a velká písmena, číslice a podtržítka _");
+            return "login";
+        }
+
+        AppUser foundAppUser = userService.findUserByUsername(username);
+        if (foundAppUser == null) {
+            model.addAttribute("message", "Uživatelské jméno neexistuje, pokud jste tu poprvé zaregistrujte se");
+            return "login";
+        }
+
+        if (!foundAppUser.getPassword().equals(password)) {
+            model.addAttribute("message", "Neplatné heslo");
+            return "login";
+        }
+
+        return "redirect:/";
+    }
+
     @GetMapping("/registrace")
     public String register(Model model) {
         return "register";

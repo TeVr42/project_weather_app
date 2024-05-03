@@ -14,7 +14,7 @@
 <div class="div-whole">
   <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
   <h1 class="h1-index">Přihlášení</h1>
-  <form action="#" th:action="@{/index}" method="post">
+  <form action="#" th:action="@{/prihlaseni}" method="post">
     <div class="form-group">
       <p th:text="${message}"></p>
       <input type="text" class="form-control" id="usernameInput" name="usernameInput" aria-describedby="usernameHelp" placeholder="Zadejte uživatelské jméno">
@@ -23,7 +23,7 @@
     </div>
     <button type="submit" class="btn btn-dark btn-custom">Přihlásit</button>
   </form>
-  <p>Nejste registrováni? Nevadí registrace je možní <a th:href="@{/registrace}">zde</a>.
+  <p>Nejste registrováni? Nevadí registrace je možná <a th:href="@{/registrace}">zde</a>.
   </p>
 </div>
 </body>
