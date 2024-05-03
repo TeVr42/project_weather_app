@@ -12,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 public class AppController {
@@ -23,11 +26,18 @@ public class AppController {
         this.forecastService = forecastService;
         this.userService = userService;
     }
+
+    private boolean isAuthorized(HttpSession session) {
+        Object authorized = session.getAttribute("authorized");
+        return authorized != null && (Boolean) authorized;
+    }
+
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(HttpSession session, Model model) {
         try {
             WeatherModel wmodel = forecastService.createWeatherModel("Liberec");
             model.addAttribute("wmodel", wmodel);
+            model.addAttribute("authorized", isAuthorized(session));
             return "index";
         } catch (JsonProcessingException e) {
             model.addAttribute("errorMessage", "Při zpracování dat se vyskytla chyba, omlouváme se ale požadevek momentálně nejsme schopni naplnit.");
@@ -36,33 +46,52 @@ public class AppController {
     }
 
     @GetMapping("/hledat")
-    public String searchLocation() {
+    public String searchLocation(HttpSession session, Model model) {
+        model.addAttribute("authorized", isAuthorized(session));
         return "search-location";
     }
 
     @PostMapping("/pocasi")
-    public String weather(@RequestParam("locationInput") String location, Model model) {
+    public String weather(@RequestParam("locationInput") String location, HttpSession session, Model model) {
         try {
             WeatherModel wmodel = forecastService.createWeatherModel(location);
             model.addAttribute("wmodel", wmodel);
+            model.addAttribute("authorized", isAuthorized(session));
             return "index";
         } catch (HttpClientErrorException e) {
             model.addAttribute("errorMessage", "Tuhle lokaci bohužel neznám, zkuste prosím jinou.");
+            model.addAttribute("authorized", isAuthorized(session));
             return "error";
         } catch (JsonProcessingException e) {
             model.addAttribute("errorMessage", "Při zpracování dat se vyskytla chyba, omlouváme se ale požadevek momentálně nejsme schopni naplnit.");
+            model.addAttribute("authorized", isAuthorized(session));
             return "error";
         }
     }
 
     @GetMapping("/api-info")
-    public String apiInfo(Model model) {
+    public String apiInfo(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         model.addAttribute("userKey", System.getenv("USER_TOKEN"));
+        model.addAttribute("authorized", isAuthorized(session));
         return "api-info";
     }
 
+    @GetMapping("/oblibene")
+    public String favoriteLocations(HttpSession session, Model model) {
+        model.addAttribute("authorized", isAuthorized(session));
+        return "favorites";
+    }
+
     @GetMapping("/prihlaseni")
-    public String login(Model model) {
+    public String login(HttpSession session, Model model) {
+        if (isAuthorized(session)) {
+            return "redirect:/";
+        }
+        String message = (String) model.getAttribute("message");
+        if (message != null) {
+            model.addAttribute("message", message);
+        }
+        model.addAttribute("authorized", isAuthorized(session));
         return "login";
     }
 
@@ -70,7 +99,10 @@ public class AppController {
     public String login(
             @RequestParam("usernameInput") String username,
             @RequestParam("passwordInput") String password,
+            HttpSession session,
             Model model) {
+
+        model.addAttribute("authorized", isAuthorized(session));
 
         if (!InputValidators.isValidUsername(username)) {
             model.addAttribute("message", "Neplatné číslo uživatelské jméno, může obsahovat pouze malá a velká písmena, číslice a podtržítka _");
@@ -87,12 +119,16 @@ public class AppController {
             model.addAttribute("message", "Neplatné heslo");
             return "login";
         }
-
+        session.setAttribute("authorized", true);
         return "redirect:/";
     }
 
     @GetMapping("/registrace")
-    public String register(Model model) {
+    public String register(HttpSession session, Model model) {
+        if (isAuthorized(session)) {
+            return "redirect:/";
+        }
+        model.addAttribute("authorized", isAuthorized(session));
         return "register";
     }
 
@@ -101,8 +137,11 @@ public class AppController {
             @RequestParam("usernameInput") String username,
             @RequestParam("passwordInput") String password,
             @RequestParam("cardNumberInput") String cardNumber,
-            Model model) {
+            HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
+        model.addAttribute("authorized", isAuthorized(session));
         AppUser existingAppUser = userService.findUserByUsername(username);
         if (existingAppUser != null) {
             model.addAttribute("message", "Uživatelské jméno již existuje");
@@ -130,8 +169,14 @@ public class AppController {
         appUser.setCardNumber(cardNumber);
 
         userService.addUser(appUser);
+        redirectAttributes.addFlashAttribute("message", "Registrace proběhla úspěšně, můžete se přihlásit");
         return "redirect:/prihlaseni";
     }
 
+    @GetMapping("/odhlasit")
+    public String logout(HttpSession session, Model model) {
+        session.setAttribute("authorized", false);
+        return "redirect:/";
+    }
 
 }
