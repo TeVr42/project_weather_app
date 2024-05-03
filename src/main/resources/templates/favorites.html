@@ -19,9 +19,9 @@
 
     </div>
     <div th:unless="${authorized}">
-        <p>Pouze pro placený přístup</p>
-        <p><a th:href="@{/registrace}">Zaregistrujte se</a> nebo <a th:href="@{/prihlaseni}">se přihlašte</a></p>
-        <img rel="shortcut icon" th:src="@{images/lock-sign.jpg}" alt="lock-sign-ai-generated" class="img-lock">
+        <div th:insert="~{component-paywall-info :: div}">
+            <!-- component-paywall-info.html -->
+        </div>
     </div>
 
 </div>

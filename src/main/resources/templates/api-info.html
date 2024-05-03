@@ -15,21 +15,23 @@
   <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
   <h1 class="h1-index">Přístup pro API</h1>
   <div th:if="${authorized}">
-    <p>
-      Data o počasí ve formátu JSON.
-      <br>
-      Tvůj osobní API klíč: <strong><span th:text="${userKey}"></span></strong>
-      <br>
-      Parametry: <br>
-      <strong>key</strong>: tvůj api klíč<br>
-      <strong>location</strong>: hledaná lokace (bez diakritiky)<br>
-      <a th:href="@{'/api?key=' + ${userKey} + '&location=Liberec'}">Zkus si to zde...</a>
-    </p>
+    <div class="div-api-info">
+      <p>
+        Data o počasí ve formátu JSON.
+        <br>
+        Tvůj osobní API klíč: <strong><span th:text="${userKey}"></span></strong>
+        <br>
+        Parametry: <br>
+        <strong>key</strong>: tvůj api klíč<br>
+        <strong>location</strong>: hledaná lokace (bez diakritiky)<br>
+        <a th:href="@{'/api?key=' + ${userKey} + '&location=Liberec'}">Zkus si to zde...</a>
+      </p>
+    </div>
   </div>
   <div th:unless="${authorized}">
-    <p>Pouze pro placený přístup</p>
-    <p><a th:href="@{/registrace}">Zaregistrujte se</a> nebo <a th:href="@{/prihlaseni}">se přihlašte</a></p>
-    <img rel="shortcut icon" th:src="@{images/lock-sign.jpg}" alt="lock-sign-ai-generated" class="img-lock">
+    <div th:insert="~{component-paywall-info :: div}">
+      <!-- component-paywall-info.html -->
+    </div>
   </div>
 
 </div>
