@@ -1,8 +1,10 @@
 package cz.stin.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import cz.stin.model.AppUser;
 import cz.stin.model.WeatherModel;
 import cz.stin.service.ForecastService;
+import cz.stin.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
@@ -14,9 +16,11 @@ import org.springframework.web.client.HttpClientErrorException;
 public class AppController {
 
     private final ForecastService forecastService;
+    private final UserService userService;
 
-    public AppController(ForecastService forecastService) {
+    public AppController(ForecastService forecastService, UserService userService) {
         this.forecastService = forecastService;
+        this.userService = userService;
     }
     @GetMapping("/")
     public String index(Model model) {
@@ -66,6 +70,27 @@ public class AppController {
         return "register";
     }
 
+    @PostMapping("/registrace")
+    public String register(
+            @RequestParam("usernameInput") String username,
+            @RequestParam("passwordInput") String password,
+            @RequestParam("cardNumberInput") String cardNumber,
+            Model model) {
+
+        AppUser existingAppUser = userService.findUserByUsername(username);
+        if (existingAppUser != null) {
+            model.addAttribute("error", "Uživatelské jméno již existuje");
+            return "register";
+        }
+
+        AppUser appUser = new AppUser();
+        appUser.setUsername(username);
+        appUser.setPassword(password);
+        appUser.setCardNumber(cardNumber);
+
+        userService.addUser(appUser);
+        return "redirect:/prihlaseni";
+    }
 
 
 }
