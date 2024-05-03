@@ -5,6 +5,7 @@ import cz.stin.model.AppUser;
 import cz.stin.model.WeatherModel;
 import cz.stin.service.ForecastService;
 import cz.stin.service.UserService;
+import cz.stin.validators.InputValidators;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
@@ -79,7 +80,22 @@ public class AppController {
 
         AppUser existingAppUser = userService.findUserByUsername(username);
         if (existingAppUser != null) {
-            model.addAttribute("error", "Uživatelské jméno již existuje");
+            model.addAttribute("message", "Uživatelské jméno již existuje");
+            return "register";
+        }
+
+        if (!InputValidators.isValidUsername(username)) {
+            model.addAttribute("message", "Neplatné číslo uživatelské jméno, může obsahovat pouze malá a velká písmena, číslice a podtržítka _");
+            return "register";
+        }
+
+        if (!InputValidators.isValidCardNumber(cardNumber)) {
+            model.addAttribute("message", "Neplatné číslo karty");
+            return "register";
+        }
+
+        if (!InputValidators.isValidPassword(password)) {
+            model.addAttribute("message", "Neplatné heslo, musí být delší než 5 znaků a obsahovat pouze písmena, číslice a znaky: _ & * ;");
             return "register";
         }
 
