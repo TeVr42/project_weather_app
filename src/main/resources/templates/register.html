@@ -14,8 +14,9 @@
 <div class="div-whole">
   <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
   <h1 class="h1-index">Registrace</h1>
-  <form action="#" th:action="@{/index}" method="post">
+  <form action="#" th:action="@{/registrace}" method="post">
     <div class="form-group">
+      <p th:text="${message}"></p>
       <input type="text" class="form-control" id="usernameInput" name="usernameInput" aria-describedby="usernameHelp" placeholder="Zadejte uživatelské jméno">
       <small id="usernameHelp" class="form-text text-muted">Uživatelské jméno nesmí obsahovat mezery</small>
       <input type="text" class="form-control" id="cardNumberInput" name="cardNumberInput" aria-describedby="cardNumberHelp" placeholder="Zadejte fiktivní číslo karty">
