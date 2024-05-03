@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="~{header :: head}">
+  <!-- header.html -->
+</head>
+
+<body>
+
+<nav th:insert="~{navbar :: div}">
+  <!-- navbar.html -->
+</nav>
+
+<div class="div-whole">
+  <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
+  <h1 class="h1-index">Registrace</h1>
+  <form action="#" th:action="@{/index}" method="post">
+    <div class="form-group">
+      <input type="text" class="form-control" id="usernameInput" name="usernameInput" aria-describedby="usernameHelp" placeholder="Zadejte uživatelské jméno">
+      <small id="usernameHelp" class="form-text text-muted">Uživatelské jméno nesmí obsahovat mezery</small>
+      <input type="text" class="form-control" id="cardNumberInput" name="cardNumberInput" aria-describedby="cardNumberHelp" placeholder="Zadejte fiktivní číslo karty">
+      <small id="cardNumberHelp" class="form-text text-muted">Pozor! nezadávejte skutečné číslo karty</small>
+      <input type="password" class="form-control" id="passwordInput" name="passwordInput"  aria-describedby="passwordHelp" placeholder="Zadejte heslo">
+    </div>
+    <button type="submit" class="btn btn-dark btn-custom">Zaregistrovat</button>
+  </form>
+</div>
+</body>
+</html>

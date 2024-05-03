@@ -56,5 +56,16 @@ public class AppController {
         return "api-info";
     }
 
+    @GetMapping("/prihlaseni")
+    public String login(Model model) {
+        return "login";
+    }
+
+    @GetMapping("/registrace")
+    public String register(Model model) {
+        return "register";
+    }
+
+
 
 }
