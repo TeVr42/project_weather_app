@@ -1,4 +1,4 @@
-package cz.stin.validators;
+package cz.stin.validator;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

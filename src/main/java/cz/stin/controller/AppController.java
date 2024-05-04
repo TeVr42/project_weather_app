@@ -7,7 +7,7 @@ import cz.stin.model.WeatherModel;
 import cz.stin.service.FavLocationService;
 import cz.stin.service.ForecastService;
 import cz.stin.service.UserService;
-import cz.stin.validators.InputValidators;
+import cz.stin.validator.InputValidators;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
