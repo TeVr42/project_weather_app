@@ -28,7 +28,7 @@
     </span>
 </p>
 
-<h1 class="h1-index">Předpověď počasí</h1>
+<h2 class="h2-index">Předpověď počasí</h2>
     <div th:if="${authorized}">
         <table class="table table-hover">
             <thead>
@@ -57,7 +57,7 @@
         </div>
     </div>
 
-<h1 class="h1-index">Historie počasí</h1>
+<h2 class="h2-index">Historie počasí</h2>
     <div th:if="${authorized}">
         <table class="table table-hover">
             <thead>
@@ -83,6 +83,22 @@
     <div th:unless="${authorized}">
         <div th:insert="~{component-paywall-info :: div}">
             <!-- component-paywall-info.html -->
+        </div>
+    </div>
+
+
+    <div th:if="${authorized}">
+        <div th:if="${isFavorite}">
+            <form th:action="@{/zrusit-misto}" method="post">
+                <input type="hidden" name="changeLocation" th:value="${wmodel.getLocation().getName()}"/>
+                <td><button class="btn btn-outline-info btn-lg btn-block" type="submit">Smazat z oblíbených</button></td>
+            </form>
+        </div>
+        <div th:unless="${isFavorite}">
+            <form th:action="@{/pridat-misto}" method="post">
+                <input type="hidden" name="changeLocation" th:value="${wmodel.getLocation().getName()}"/>
+                <td><button class="btn btn-outline-info btn-lg btn-block" type="submit">Přidat k oblíbeným</button></td>
+            </form>
         </div>
     </div>
 </div>

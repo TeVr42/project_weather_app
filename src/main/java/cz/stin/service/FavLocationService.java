@@ -21,5 +21,20 @@ public class FavLocationService {
     public List<FavLocation> findLocationsByUsername(String username) {
         return locationRepository.findByUsername(username);
     }
+
+    public Long findLocationIdByUsernameAndLocation(String username, String location) {
+        FavLocation favLocation = locationRepository.findByUsernameAndLocation(username, location);
+        if (favLocation != null) {
+            return favLocation.getId();
+        }
+        return null;
+    }
+
+    public void removeFavLocation(String username, String location) {
+        Long locationId = findLocationIdByUsernameAndLocation(username, location);
+        if (locationId != null) {
+            locationRepository.deleteById(locationId);
+        }
+    }
 }
 

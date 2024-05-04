@@ -43,6 +43,11 @@ public class AppController {
             WeatherModel wmodel = forecastService.createWeatherModel("Liberec");
             model.addAttribute("wmodel", wmodel);
             model.addAttribute("authorized", isAuthorized(session));
+
+            Long locationId = favLocationService.findLocationIdByUsernameAndLocation(
+                    (String) session.getAttribute("username"), wmodel.getLocation().getName());
+
+            model.addAttribute("isFavorite", locationId != null);
             return "index";
         } catch (JsonProcessingException e) {
             model.addAttribute("errorMessage", "Při zpracování dat se vyskytla chyba, omlouváme se ale požadevek momentálně nejsme schopni naplnit.");
@@ -62,6 +67,9 @@ public class AppController {
         try {
             WeatherModel wmodel = forecastService.createWeatherModel(location);
             model.addAttribute("wmodel", wmodel);
+            Long locationId = favLocationService.findLocationIdByUsernameAndLocation(
+                    (String) session.getAttribute("username"), wmodel.getLocation().getName());
+            model.addAttribute("isFavorite", locationId != null);
             return "index";
         } catch (HttpClientErrorException e) {
             model.addAttribute("errorMessage", "Tuhle lokaci bohužel neznám, zkuste prosím jinou.");
@@ -88,6 +96,16 @@ public class AppController {
             model.addAttribute("locations", locations);
         }
         return "favorites";
+    }
+
+    @PostMapping("/oblibene")
+    public String favoriteLocations(@RequestParam("locationInput") String location, HttpSession session, Model model) {
+        if (isAuthorized(session)) {
+            String username = (String) session.getAttribute("username");
+            List<FavLocation> locations = favLocationService.findLocationsByUsername(username);
+            model.addAttribute("locations", locations);
+        }
+        return "redirect:/oblibene";
     }
 
     @GetMapping("/prihlaseni")
@@ -189,4 +207,20 @@ public class AppController {
         return "redirect:/";
     }
 
+    @PostMapping("/pridat-misto")
+    public String addLocation(@RequestParam("changeLocation") String location, HttpSession session, Model model) {
+        FavLocation favLocation = new FavLocation();
+        favLocation.setUsername((String) session.getAttribute("username"));
+        favLocation.setLocation(location);
+        favLocationService.addFavLocation(favLocation);
+        return "redirect:/oblibene";
+    }
+
+    @PostMapping("/zrusit-misto")
+    public String removeLocation(@RequestParam("changeLocation") String location, HttpSession session, Model model) {
+        FavLocation favLocation = new FavLocation();
+        String username = (String) session.getAttribute("username");
+        favLocationService.removeFavLocation(username, location);
+        return "redirect:/oblibene";
+    }
 }
