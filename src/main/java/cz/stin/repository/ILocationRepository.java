@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ILocationRepository extends JpaRepository<FavLocation, Long> {
     List<FavLocation> findByUsername(String username);
+
+    FavLocation findByUsernameAndLocation(String username, String location);
 }
