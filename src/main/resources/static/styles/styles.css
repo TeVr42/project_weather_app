@@ -1,14 +1,19 @@
 body {
     margin: 0;
     text-align: center;
+      font-family: "Montserrat", sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: "Xanh Mono", monospace;
 }
 
 p, th, td, .navbar-brand, .nav-item {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
 }
 
 .btn-custom {
-    padding: 0.8rem 1.5rem;
+    padding: 0.5rem 1.5rem;
     font-size: 1.2rem;
     font-weight: bold;
     border-radius: 10px;
@@ -24,12 +29,12 @@ p, th, td, .navbar-brand, .nav-item {
 
 .h1-index {
     margin: 2rem 0;
-    font-size: 2.5rem;
+    font-size: 3.2rem;
 }
 
 .h2-index {
     margin: 2rem 0;
-    font-size: 2.3rem;
+    font-size: 2.8rem;
 }
 
 .img-lock {
@@ -54,8 +59,19 @@ p, th, td, .navbar-brand, .nav-item {
 }
 
 @media screen and (max-width: 590px) {
+
+    .h1-index {
+        margin: 2rem 0;
+        font-size: 2.8rem;
+    }
+
+    .h2-index {
+        margin: 2rem 0;
+        font-size: 2.4rem;
+    }
+
     th, td {
-        font-size: 0.8rem;
+        font-size: 1.1rem;
     }
 
     .form-group {
@@ -63,7 +79,7 @@ p, th, td, .navbar-brand, .nav-item {
     }
 
     .td-icon {
-        width: 2rem;
+        width: 2.4rem;
     }
 
 }
