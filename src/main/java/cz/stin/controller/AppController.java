@@ -15,7 +15,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 public class AppController {
 
@@ -53,18 +52,16 @@ public class AppController {
 
     @PostMapping("/pocasi")
     public String weather(@RequestParam("locationInput") String location, HttpSession session, Model model) {
+        model.addAttribute("authorized", isAuthorized(session));
         try {
             WeatherModel wmodel = forecastService.createWeatherModel(location);
             model.addAttribute("wmodel", wmodel);
-            model.addAttribute("authorized", isAuthorized(session));
             return "index";
         } catch (HttpClientErrorException e) {
             model.addAttribute("errorMessage", "Tuhle lokaci bohužel neznám, zkuste prosím jinou.");
-            model.addAttribute("authorized", isAuthorized(session));
             return "error";
         } catch (JsonProcessingException e) {
             model.addAttribute("errorMessage", "Při zpracování dat se vyskytla chyba, omlouváme se ale požadevek momentálně nejsme schopni naplnit.");
-            model.addAttribute("authorized", isAuthorized(session));
             return "error";
         }
     }

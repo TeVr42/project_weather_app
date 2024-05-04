@@ -1,5 +1,9 @@
 databaseChangeLog:
   - include:
-      file: classpath:/db/changelog/changes/create_locations.sql
+      file: classpath:/db/changelog/changes/001_create_users.sql
   - include:
-      file: classpath:/db/changelog/changes/create_users.sql
+      file: classpath:/db/changelog/changes/002_create_locations.sql
+  - include:
+      file: classpath:/db/changelog/changes/003_fill_app_users.sql
+  - include:
+      file: classpath:/db/changelog/changes/004_fill_fav_locations.sql
