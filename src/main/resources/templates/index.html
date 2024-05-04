@@ -52,8 +52,9 @@
         </table>
     </div>
     <div th:unless="${authorized}">
-        <p>Pouze pro placený přístup</p>
-        <img rel="shortcut icon" th:src="@{images/lock-sign.jpg}" alt="lock-sign-ai-generated" class="img-lock">
+        <div th:insert="~{component-paywall-info :: div}">
+            <!-- component-paywall-info.html -->
+        </div>
     </div>
 
 <h1 class="h1-index">Historie počasí</h1>
@@ -80,8 +81,9 @@
         </table>
     </div>
     <div th:unless="${authorized}">
-        <p>Pouze pro placený přístup</p>
-        <img rel="shortcut icon" th:src="@{images/lock-sign.jpg}" alt="lock-sign-ai-generated" class="img-lock">
+        <div th:insert="~{component-paywall-info :: div}">
+            <!-- component-paywall-info.html -->
+        </div>
     </div>
 </div>
 </body>
