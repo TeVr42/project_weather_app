@@ -2,7 +2,9 @@ package cz.stin.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import cz.stin.model.AppUser;
+import cz.stin.model.FavLocation;
 import cz.stin.model.WeatherModel;
+import cz.stin.service.FavLocationService;
 import cz.stin.service.ForecastService;
 import cz.stin.service.UserService;
 import cz.stin.validators.InputValidators;
@@ -15,15 +17,19 @@ import org.springframework.web.client.HttpClientErrorException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 public class AppController {
 
     private final ForecastService forecastService;
     private final UserService userService;
+    private final FavLocationService favLocationService;
 
-    public AppController(ForecastService forecastService, UserService userService) {
+    public AppController(ForecastService forecastService, UserService userService, FavLocationService favLocationService) {
         this.forecastService = forecastService;
         this.userService = userService;
+        this.favLocationService = favLocationService;
     }
 
     private boolean isAuthorized(HttpSession session) {
@@ -76,6 +82,11 @@ public class AppController {
     @GetMapping("/oblibene")
     public String favoriteLocations(HttpSession session, Model model) {
         model.addAttribute("authorized", isAuthorized(session));
+        if (isAuthorized(session)) {
+            String username = (String) session.getAttribute("username");
+            List<FavLocation> locations = favLocationService.findLocationsByUsername(username);
+            model.addAttribute("locations", locations);
+        }
         return "favorites";
     }
 
@@ -117,6 +128,7 @@ public class AppController {
             return "login";
         }
         session.setAttribute("authorized", true);
+        session.setAttribute("username", foundAppUser.getUsername());
         return "redirect:/";
     }
 
@@ -173,6 +185,7 @@ public class AppController {
     @GetMapping("/odhlasit")
     public String logout(HttpSession session, Model model) {
         session.setAttribute("authorized", false);
+        session.setAttribute("username", "");
         return "redirect:/";
     }
 
