@@ -207,4 +207,20 @@ public class AppController {
         return "redirect:/";
     }
 
+    @PostMapping("/pridat-misto")
+    public String addLocation(@RequestParam("changeLocation") String location, HttpSession session, Model model) {
+        FavLocation favLocation = new FavLocation();
+        favLocation.setUsername((String) session.getAttribute("username"));
+        favLocation.setLocation(location);
+        favLocationService.addFavLocation(favLocation);
+        return "redirect:/oblibene";
+    }
+
+    @PostMapping("/zrusit-misto")
+    public String removeLocation(@RequestParam("changeLocation") String location, HttpSession session, Model model) {
+        FavLocation favLocation = new FavLocation();
+        String username = (String) session.getAttribute("username");
+        favLocationService.removeFavLocation(username, location);
+        return "redirect:/oblibene";
+    }
 }
