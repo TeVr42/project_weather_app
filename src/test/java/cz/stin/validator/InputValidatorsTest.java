@@ -33,12 +33,12 @@ class InputValidatorsTest {
     @Test
     void isValidPassword_ValidPassword_ReturnsTrue() {
         assertTrue(InputValidators.isValidPassword("Password123;&"));
-        assertTrue(InputValidators.isValidPassword("password"));
+        assertTrue(InputValidators.isValidPassword("passwo"));
     }
 
     @Test
     void isValidPassword_InvalidPassword_ReturnsFalse() {
-        assertFalse(InputValidators.isValidPassword("pass"));
+        assertFalse(InputValidators.isValidPassword("passw"));
         assertFalse(InputValidators.isValidPassword("Password 123"));
         assertFalse(InputValidators.isValidPassword("Password*&+"));
     }
