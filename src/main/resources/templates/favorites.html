@@ -15,12 +15,7 @@
     <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
     <h1 class="h1-index">Oblíbená místa</h1>
     <div th:if="${authorized}">
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col">Lokalita</th>
-            </tr>
-            </thead>
+        <table class="table">
             <tbody>
             <tr th:each="location, iterStat : ${locations}">
                 <form th:action="@{/pocasi}" method="post">

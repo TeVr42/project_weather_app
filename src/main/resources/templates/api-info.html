@@ -20,10 +20,10 @@
         Data o počasí ve formátu JSON.
         <br>
         Tvůj osobní API klíč: <strong><span th:text="${userKey}"></span></strong>
-        <br>
+        <br><br>
         Parametry: <br>
         <strong>key</strong>: tvůj api klíč<br>
-        <strong>location</strong>: hledaná lokace (bez diakritiky)<br>
+        <strong>location</strong>: hledaná lokace (bez diakritiky)<br><br>
         <a th:href="@{'/api?key=' + ${userKey} + '&location=Liberec'}">Zkus si to zde...</a>
       </p>
     </div>

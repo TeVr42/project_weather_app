@@ -34,19 +34,17 @@
             <thead>
             <tr>
                 <th scope="col">Čas</th>
-                <th scope="col">Stav</th>
-                <th scope="col">Teplota (°C)</th>
+                <th scope="col">Počasí</th>
                 <th scope="col">Ikona</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="condition, iterStat : ${wmodel.getForecast()}">
                 <td th:text="${condition.getFormattedTime()}"></td>
-                <td th:text="${condition.getText()}"></td>
-                <td th:text="${condition.getTemp_c()}"></td>
                 <td>
-                    <img th:src="@{${condition.getIcon()}}" class="td-icon" alt="Weather Icon" />
+                    <strong><span th:text="${condition.getText()}"></span></strong> <span th:text="${'(' + condition.getTemp_c()} + '°C)'"></span>
                 </td>
+                <td><img th:src="@{${condition.getIcon()}}" class="td-icon" alt="Weather Icon" /></td>
             </tr>
             </tbody>
         </table>
@@ -63,19 +61,17 @@
             <thead>
             <tr>
                 <th scope="col">Čas</th>
-                <th scope="col">Stav</th>
-                <th scope="col">Teplota (°C)</th>
+                <th scope="col">Počasí</th>
                 <th scope="col">Ikona</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="condition, iterStat : ${wmodel.getHistory()}">
                 <td th:text="${condition.getFormattedTime()}"></td>
-                <td th:text="${condition.getText()}"></td>
-                <td th:text="${condition.getTemp_c()}"></td>
                 <td>
-                    <img th:src="@{${condition.getIcon()}}" class="td-icon" alt="Weather Icon" />
+                    <strong><span th:text="${condition.getText()}"></span></strong> <span th:text="${'(' + condition.getTemp_c()} + '°C)'"></span>
                 </td>
+                <td><img th:src="@{${condition.getIcon()}}" class="td-icon" alt="Weather Icon" /></td>
             </tr>
             </tbody>
         </table>
