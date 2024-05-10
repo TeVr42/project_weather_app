@@ -47,25 +47,41 @@ public class UserController {
 
         model.addAttribute("authorized", isAuthorized(session));
 
+        if (!validateUsername(username, model) || !validatePassword(username, password, session, model)) {
+            return "login";
+        }
+
+        return "redirect:/";
+    }
+
+    private boolean validateUsername(String username, Model model) {
         if (!InputValidators.isValidUsername(username)) {
             model.addAttribute("message", "Neplatné číslo uživatelské jméno, může obsahovat pouze malá a velká písmena, číslice a podtržítka _");
-            return "login";
+            return false;
         }
 
         AppUser foundAppUser = userService.findUserByUsername(username);
         if (foundAppUser == null) {
             model.addAttribute("message", "Uživatelské jméno neexistuje, pokud jste tu poprvé zaregistrujte se");
-            return "login";
+            return false;
         }
 
+        return true;
+    }
+
+    private boolean validatePassword(String username, String password, HttpSession session, Model model) {
+        AppUser foundAppUser = userService.findUserByUsername(username);
         if (!foundAppUser.getPassword().equals(password)) {
+            session.setAttribute("authorized", false);
             model.addAttribute("message", "Neplatné heslo");
-            return "login";
+            return false;
         }
+
         session.setAttribute("authorized", true);
         session.setAttribute("username", foundAppUser.getUsername());
-        return "redirect:/";
+        return true;
     }
+
 
     @GetMapping("/registrace")
     public String register(HttpSession session, Model model) {
@@ -75,7 +91,6 @@ public class UserController {
         model.addAttribute("authorized", isAuthorized(session));
         return "register";
     }
-
     @PostMapping("/registrace")
     public String register(
             @RequestParam("usernameInput") String username,
@@ -86,24 +101,8 @@ public class UserController {
             RedirectAttributes redirectAttributes) {
 
         model.addAttribute("authorized", isAuthorized(session));
-        AppUser existingAppUser = userService.findUserByUsername(username);
-        if (existingAppUser != null) {
-            model.addAttribute("message", "Uživatelské jméno již existuje");
-            return "register";
-        }
 
-        if (!InputValidators.isValidUsername(username)) {
-            model.addAttribute("message", "Neplatné číslo uživatelské jméno, může obsahovat pouze malá a velká písmena, číslice a podtržítka _");
-            return "register";
-        }
-
-        if (!InputValidators.isValidCardNumber(cardNumber)) {
-            model.addAttribute("message", "Neplatné číslo karty");
-            return "register";
-        }
-
-        if (!InputValidators.isValidPassword(password)) {
-            model.addAttribute("message", "Neplatné heslo, musí být delší než 5 znaků a obsahovat pouze písmena, číslice a znaky: _ & * ;");
+        if (!validateRegistration(username, password, cardNumber, model)) {
             return "register";
         }
 
@@ -115,6 +114,31 @@ public class UserController {
         userService.addUser(appUser);
         redirectAttributes.addFlashAttribute("message", "Registrace proběhla úspěšně, můžete se přihlásit");
         return "redirect:/prihlaseni";
+    }
+
+    private boolean validateRegistration(String username, String password, String cardNumber, Model model) {
+        AppUser existingAppUser = userService.findUserByUsername(username);
+        if (existingAppUser != null) {
+            model.addAttribute("message", "Uživatelské jméno již existuje");
+            return false;
+        }
+
+        if (!InputValidators.isValidUsername(username)) {
+            model.addAttribute("message", "Neplatné číslo uživatelské jméno, může obsahovat pouze malá a velká písmena, číslice a podtržítka");
+            return false;
+        }
+
+        if (!InputValidators.isValidCardNumber(cardNumber)) {
+            model.addAttribute("message", "Neplatné číslo karty");
+            return false;
+        }
+
+        if (!InputValidators.isValidPassword(password)) {
+            model.addAttribute("message", "Neplatné heslo, musí být delší než 5 znaků a obsahovat pouze písmena, číslice a znaky: _ & * ;");
+            return false;
+        }
+
+        return true;
     }
 
     @GetMapping("/odhlasit")
