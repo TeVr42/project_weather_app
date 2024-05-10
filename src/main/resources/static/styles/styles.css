@@ -75,7 +75,7 @@ p, th, td, .navbar-brand, .nav-item {
 }
 
 .nav-item {
-    margin: 0 0.5;
+    margin: 0 0.1rem;
 }
 
 @media screen and (max-width: 1190px) {
