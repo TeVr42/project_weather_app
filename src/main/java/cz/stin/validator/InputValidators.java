@@ -4,6 +4,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class InputValidators {
+
+    private InputValidators() {};
+
     public static boolean isValidCardNumber(String cardNumber) {
         String strippedNumber = cardNumber.replaceAll("\\s", "");
         if (strippedNumber.length() != 16) {
