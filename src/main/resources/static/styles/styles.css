@@ -74,6 +74,10 @@ p, th, td, .navbar-brand, .nav-item {
     border-radius: 100%;
 }
 
+.nav-item {
+    margin: 0 0.1rem;
+}
+
 @media screen and (max-width: 1190px) {
 
     .form-group {
