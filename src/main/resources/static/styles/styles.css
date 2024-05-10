@@ -14,7 +14,7 @@ a:hover {
 }
 
 h1, h2, h3 {
-  font-family: "Xanh Mono", monospace;
+  font-family: "Poiret One", sans-serif;
 }
 
 form {
@@ -72,6 +72,10 @@ p, th, td, .navbar-brand, .nav-item {
 .img-logo {
     width: 6rem;
     border-radius: 100%;
+}
+
+.nav-item {
+    margin: 0 0.1rem;
 }
 
 @media screen and (max-width: 1190px) {
