@@ -38,6 +38,7 @@ public class RequestControllerTest {
 
     @Test
     public void testWeatherAPIEndpoint_Unauthorized() throws Exception {
+        when(forecastService.getJSONWeather(Mockito.anyString())).thenReturn("{\"error\":\"Unauthorized request\"}");
         mvc.perform(MockMvcRequestBuilders.get("/api")
                         .param("key", "invalid_key")
                         .param("location", "Liberec"))
@@ -47,25 +48,31 @@ public class RequestControllerTest {
 
     @Test
     public void testWeatherAPIEndpoint_ValidRequest() throws Exception {
+        when(forecastService.getJSONWeather(Mockito.anyString())).thenReturn("{\"weather\":\"Sunny\"}");
         mvc.perform(MockMvcRequestBuilders.get("/api")
-                        .param("key", System.getenv("USER_TOKEN")) // Provide a valid key
+                        .param("key", System.getenv("USER_TOKEN"))
                         .param("location", "Liberec"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("{\"weather\":\"Sunny\"}"));
     }
 
     @Test
     public void testWeatherAPIEndpoint_HttpClientErrorException() throws Exception {
+        when(forecastService.getJSONWeather(Mockito.anyString())).thenReturn("{\"error\":\"Invalid location\"}");
         mvc.perform(MockMvcRequestBuilders.get("/api")
                         .param("key", System.getenv("USER_TOKEN"))
-                        .param("location", "yxusncjyx"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                        .param("location", "invalid_location"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json("{\"error\":\"Invalid location\"}"));
+
     }
 
     @Test
     public void testWeatherAPIEndpoint_UnauthorizedAndInvalid() throws Exception {
+        when(forecastService.getJSONWeather(Mockito.anyString())).thenReturn("{\"error\":\"Unauthorized request\"}");
         mvc.perform(MockMvcRequestBuilders.get("/api")
                         .param("key", "invalid_key")
-                        .param("location", "yxusncjyx"))
+                        .param("location", "invalid_location"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("{\"error\":\"Unauthorized request\"}"));
     }
@@ -73,7 +80,6 @@ public class RequestControllerTest {
     @Test
     public void testWeatherAPIEndpoint_JsonProcessingException() throws Exception {
         when(forecastService.getJSONWeather(Mockito.anyString())).thenThrow(JsonProcessingException.class);
-
         mvc.perform(MockMvcRequestBuilders.get("/api")
                         .param("key", System.getenv("USER_TOKEN"))
                         .param("location", "Liberec"))
@@ -83,7 +89,6 @@ public class RequestControllerTest {
     @Test
     public void testWeatherAPIEndpoint_HttpClientErrorException_mock() throws Exception {
         when(forecastService.getJSONWeather(Mockito.anyString())).thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
-
         mvc.perform(MockMvcRequestBuilders.get("/api")
                         .param("key", System.getenv("USER_TOKEN"))
                         .param("location", "Liberec"))
