@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import cz.stin.model.AppUser;
+import cz.stin.model.Constants;
 import cz.stin.service.UserService;
 import cz.stin.validator.InputValidators;
 import jakarta.servlet.http.HttpSession;
@@ -130,7 +131,7 @@ class UserControllerTest {
         String result = userController.register(username, password, cardNumber, session, model, redirectAttributes);
 
         verify(userService).addUser(any(AppUser.class));
-        verify(redirectAttributes).addFlashAttribute("message", "Registrace proběhla úspěšně, můžete se přihlásit");
+        verify(redirectAttributes).addFlashAttribute("message", Constants.getMessageSuccessfulRegistration());
         assert result.equals("redirect:/prihlaseni");
     }
 
@@ -150,7 +151,7 @@ class UserControllerTest {
 
         String result = userController.register(username, password, cardNumber, session, model, redirectAttributes);
 
-        verify(model).addAttribute("message", "Uživatelské jméno již existuje");
+        verify(model).addAttribute("message", Constants.getMessageAlreadyUsedUsername());
         assert result.equals("register");
     }
 
@@ -163,7 +164,7 @@ class UserControllerTest {
 
         String result = userController.register(username, password, cardNumber, session, model, redirectAttributes);
 
-        verify(model).addAttribute("message", "Neplatné číslo uživatelské jméno, může obsahovat pouze malá a velká písmena, číslice a podtržítka");
+        verify(model).addAttribute("message", Constants.getMessageInvalidUsername());
         assert result.equals("register");
     }
 

@@ -1,6 +1,7 @@
 package cz.stin.controller;
 
 import cz.stin.model.AppUser;
+import cz.stin.model.Constants;
 import cz.stin.service.UserService;
 import cz.stin.validator.InputValidators;
 import org.springframework.stereotype.Controller;
@@ -56,13 +57,13 @@ public class UserController {
 
     private boolean validateUsername(String username, Model model) {
         if (!InputValidators.isValidUsername(username)) {
-            model.addAttribute("message", "Neplatné číslo uživatelské jméno, může obsahovat pouze malá a velká písmena, číslice a podtržítka _");
+            model.addAttribute("message", Constants.getMessageInvalidUsername());
             return false;
         }
 
         AppUser foundAppUser = userService.findUserByUsername(username);
         if (foundAppUser == null) {
-            model.addAttribute("message", "Uživatelské jméno neexistuje, pokud jste tu poprvé zaregistrujte se");
+            model.addAttribute("message", Constants.getMessageUnknownUsername());
             return false;
         }
 
@@ -73,7 +74,7 @@ public class UserController {
         AppUser foundAppUser = userService.findUserByUsername(username);
         if (!foundAppUser.getPassword().equals(password)) {
             session.setAttribute("authorized", false);
-            model.addAttribute("message", "Neplatné heslo");
+            model.addAttribute("message", Constants.getMessageWrongPassword());
             return false;
         }
 
@@ -113,29 +114,29 @@ public class UserController {
         appUser.setCardNumber(cardNumber);
 
         userService.addUser(appUser);
-        redirectAttributes.addFlashAttribute("message", "Registrace proběhla úspěšně, můžete se přihlásit");
+        redirectAttributes.addFlashAttribute("message", Constants.getMessageSuccessfulRegistration());
         return "redirect:/prihlaseni";
     }
 
     private boolean validateRegistration(String username, String password, String cardNumber, Model model) {
         AppUser existingAppUser = userService.findUserByUsername(username);
         if (existingAppUser != null) {
-            model.addAttribute("message", "Uživatelské jméno již existuje");
+            model.addAttribute("message", Constants.getMessageAlreadyUsedUsername());
             return false;
         }
 
         if (!InputValidators.isValidUsername(username)) {
-            model.addAttribute("message", "Neplatné číslo uživatelské jméno, může obsahovat pouze malá a velká písmena, číslice a podtržítka");
+            model.addAttribute("message", Constants.getMessageInvalidUsername());
             return false;
         }
 
         if (!InputValidators.isValidCardNumber(cardNumber)) {
-            model.addAttribute("message", "Neplatné číslo karty");
+            model.addAttribute("message", Constants.getMessageInvalidCardNumber());
             return false;
         }
 
         if (!InputValidators.isValidPassword(password)) {
-            model.addAttribute("message", "Neplatné heslo, musí být delší než 5 znaků a obsahovat pouze písmena, číslice a znaky: _ & * ;");
+            model.addAttribute("message", Constants.getMessageInvalidPassword());
             return false;
         }
 

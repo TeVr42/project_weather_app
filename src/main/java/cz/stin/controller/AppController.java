@@ -1,6 +1,7 @@
 package cz.stin.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import cz.stin.model.Constants;
 import cz.stin.model.FavLocation;
 import cz.stin.model.WeatherModel;
 import cz.stin.service.FavLocationService;
@@ -40,7 +41,7 @@ public class AppController {
             model.addAttribute("isFavorite", locationId != null);
             return "index";
         } catch (JsonProcessingException e) {
-            model.addAttribute("errorMessage", "Při zpracování dat se vyskytla chyba, omlouváme se ale požadevek momentálně nejsme schopni naplnit.");
+            model.addAttribute("errorMessage", Constants.getMessageProcessingMistake());
             return "error";
         }
     }
@@ -62,10 +63,10 @@ public class AppController {
             model.addAttribute("isFavorite", locationId != null);
             return "index";
         } catch (HttpClientErrorException e) {
-            model.addAttribute("errorMessage", "Tuhle lokaci bohužel neznám, zkuste prosím jinou.");
+            model.addAttribute("errorMessage", Constants.getMessageUnknownLocation());
             return "error";
         } catch (JsonProcessingException e) {
-            model.addAttribute("errorMessage", "Při zpracování dat se vyskytla chyba, omlouváme se ale požadevek momentálně nejsme schopni naplnit.");
+            model.addAttribute("errorMessage", Constants.getMessageProcessingMistake());
             return "error";
         }
     }
