@@ -148,4 +148,51 @@ class AppControllerTest {
         assertEquals("favorites", result);
         verify(model).addAttribute("authorized", false);
     }
+
+
+    @Test
+    void testFavoriteLocationsPost_WithAuthorization() {
+        when(session.getAttribute("authorized")).thenReturn(true);
+        when(session.getAttribute("username")).thenReturn("testUser");
+        List<FavLocation> locations = new ArrayList<>();
+        when(favLocationService.findLocationsByUsername("testUser")).thenReturn(locations);
+
+        String result = appController.favoriteLocations("location", session, model);
+
+        assertEquals("redirect:/oblibene", result);
+        verify(model).addAttribute("locations", locations);
+    }
+
+    @Test
+    void testFavoriteLocationsPost_WithoutAuthorization() {
+        when(session.getAttribute("authorized")).thenReturn(false);
+
+        String result = appController.favoriteLocations("location", session, model);
+
+        assertEquals("redirect:/oblibene", result);
+    }
+
+    @Test
+    void testAddLocation() {
+        when(session.getAttribute("username")).thenReturn("testUser");
+
+        String result = appController.addLocation("location", session, model);
+
+        assertEquals("redirect:/oblibene", result);
+        FavLocation favLocation = new FavLocation();
+        favLocation.setUsername("testUser");
+        favLocation.setLocation("location");
+
+        verify(favLocationService).addFavLocation(favLocation);
+    }
+
+    @Test
+    void testRemoveLocation() {
+        when(session.getAttribute("username")).thenReturn("testUser");
+
+        String result = appController.removeLocation("location", session, model);
+
+        assertEquals("redirect:/oblibene", result);
+        verify(favLocationService).removeFavLocation("testUser", "location");
+    }
 }
