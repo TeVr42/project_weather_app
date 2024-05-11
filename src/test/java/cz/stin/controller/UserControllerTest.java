@@ -7,7 +7,6 @@ import static org.mockito.Mockito.*;
 import cz.stin.model.AppUser;
 import cz.stin.model.Constants;
 import cz.stin.service.UserService;
-import cz.stin.validator.InputValidators;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
