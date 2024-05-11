@@ -167,4 +167,35 @@ class UserControllerTest {
         assert result.equals("register");
     }
 
+    @Test
+    void testRegisterWhenAuthorized() {
+        when(session.getAttribute("authorized")).thenReturn(true);
+
+        String result = userController.register(session, model);
+
+        assertEquals("redirect:/", result);
+    }
+
+    @Test
+    void testRegisterWhenNotAuthorized() {
+        when(session.getAttribute("authorized")).thenReturn(false);
+
+        String result = userController.register(session, model);
+
+        assertEquals("register", result);
+        verify(model).addAttribute("authorized", false);
+    }
+
+    @Test
+    void testLogout() {
+        MockHttpSession mockSession = new MockHttpSession();
+        mockSession.setAttribute("authorized", true);
+        mockSession.setAttribute("username", "testUser");
+
+        String result = userController.logout(mockSession, model);
+
+        assertEquals("redirect:/", result);
+        assertEquals(false, mockSession.getAttribute("authorized"));
+        assertEquals("", mockSession.getAttribute("username"));
+    }
 }

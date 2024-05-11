@@ -91,6 +91,7 @@ public class UserController {
         model.addAttribute("authorized", isAuthorized(session));
         return "register";
     }
+
     @PostMapping("/registrace")
     public String register(
             @RequestParam("usernameInput") String username,
