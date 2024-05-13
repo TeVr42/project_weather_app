@@ -13,7 +13,7 @@
 
     <groupId>cz.stin</groupId>
     <artifactId>STIN_projekt</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>app</name>
     <description>Weather application</description>
 
