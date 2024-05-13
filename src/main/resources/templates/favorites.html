@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="~{header :: head}">
+    <!-- header.html -->
+</head>
+
+<body>
+
+<nav th:insert="~{navbar :: div}">
+    <!-- navbar.html -->
+</nav>
+
+<div class="div-whole">
+    <img rel="shortcut icon" th:src="@{images/frog-logo.jpg}" alt="logo-ai-generated" class="img-logo">
+    <h1 class="h1-index">Oblíbená místa</h1>
+    <div th:if="${authorized}">
+        <table class="table">
+            <tbody>
+            <tr th:each="location, iterStat : ${locations}">
+                <form th:action="@{/pocasi}" method="post">
+                    <input type="hidden" name="locationInput" th:value="${location.getLocation()}"/>
+                    <td><button class="btn btn-outline-info btn-lg btn-block" type="submit" th:text="${location.getLocation()}"></button></td>
+                </form>
+            </tr>
+            </tbody>
+        </table>
+        
+    </div>
+    <div th:unless="${authorized}">
+        <div th:insert="~{component-paywall-info :: div}">
+            <!-- component-paywall-info.html -->
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
