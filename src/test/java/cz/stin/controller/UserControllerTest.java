@@ -8,15 +8,16 @@ import cz.stin.model.AppUser;
 import cz.stin.model.Constants;
 import cz.stin.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
     @Mock
@@ -33,11 +34,6 @@ class UserControllerTest {
 
     @InjectMocks
     private UserController userController;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testLoginWhenAuthorized() {
