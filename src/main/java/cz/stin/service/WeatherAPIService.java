@@ -1,4 +1,5 @@
 package cz.stin.service;
+import cz.stin.model.Constants;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class WeatherAPIService {
 
     public WeatherAPIService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
-        this.apiKey = System.getenv("API_KEY");
+        this.apiKey = System.getenv(Constants.ENV_VAR_API_KEY);
     }
 
     public String getCurrentWeather(String location) {

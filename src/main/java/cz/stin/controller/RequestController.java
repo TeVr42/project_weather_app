@@ -1,6 +1,7 @@
 package cz.stin.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import cz.stin.model.Constants;
 import cz.stin.service.ForecastService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,8 +23,8 @@ public class RequestController {
 
     @RequestMapping(value = "/api", method = RequestMethod.GET)
     public String weatherAPI(String key, String location) {
-        if (!key.equals(System.getenv("USER_TOKEN"))) {
-            return "{\"error\":\"Unauthorized request\"}";
+        if (!key.equals(System.getenv(Constants.ENV_VAR_USER_TOKEN))) {
+            return Constants.getJsonUnauthorizedRequest();
         }
         try {
             return forecastService.getJSONWeather(location);
