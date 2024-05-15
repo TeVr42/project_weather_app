@@ -8,7 +8,7 @@ public class Constants {
     private static final String MESSAGE_WRONG_PASSWORD = "Neplatné heslo";
     private static final String MESSAGE_SUCCESSFUL_REGISTRATION = "Registrace proběhla úspěšně, můžete se přihlásit";
     private static final String MESSAGE_ALREADY_USED_USERNAME = "Uživatelské jméno již existuje";
-    private static final String MESSAGE_INVALID_CARD_NUMBER = "Neplatné číslo karty";
+    private static final String MESSAGE_INVALID_CARD_NUMBER = "Neplatné číslo karty (platných je 16 číslic)";
     private static final String MESSAGE_INVALID_PASSWORD = "Neplatné heslo, musí být delší než 5 znaků a obsahovat pouze písmena, číslice a znaky: _ & * ;";
     public static String getMessageUnknownLocation() {
         return MESSAGE_UNKNOWN_LOCATION;
