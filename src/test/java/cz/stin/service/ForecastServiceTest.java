@@ -65,7 +65,6 @@ public class ForecastServiceTest {
 
     @Test
     void createWeatherModel_ValidLocation_ReturnsWeatherModel() throws JsonProcessingException {
-        WeatherModel expectedModel = new WeatherModel();
         when(apiService.getCurrentWeather(anyString())).thenReturn("currentWeatherJSON");
         when(apiService.getForecastWeather(anyString())).thenReturn("forecastWeatherJSON");
         when(apiService.getHistoricalWeather(anyString())).thenReturn("historyWeatherJSON");
@@ -80,7 +79,6 @@ public class ForecastServiceTest {
 
     @Test
     void getJSONWeather_ValidLocation_ReturnsJSONString() throws JsonProcessingException {
-        WeatherModel weatherModel = new WeatherModel();
         when(apiService.getCurrentWeather(anyString())).thenReturn("currentWeatherJSON");
         when(apiService.getForecastWeather(anyString())).thenReturn("forecastWeatherJSON");
         when(apiService.getHistoricalWeather(anyString())).thenReturn("historyWeatherJSON");
