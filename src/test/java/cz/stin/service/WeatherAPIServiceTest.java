@@ -2,17 +2,22 @@ package cz.stin.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
+
+@ExtendWith(MockitoExtension.class)
 public class WeatherAPIServiceTest {
 
     @Mock
@@ -22,7 +27,6 @@ public class WeatherAPIServiceTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         weatherAPIService = new WeatherAPIService(new RestTemplateBuilder() {
             @Override
             public RestTemplate build() {
@@ -92,5 +96,15 @@ public class WeatherAPIServiceTest {
 
         assertNotNull(actualResponse);
         assertTrue(actualResponse.contains("Forecast weather data"));
+    }
+
+    @Test
+    void testGetWeatherData_HttpRequestFailed() {
+        ResponseEntity<String> errorResponse = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
+        when(restTemplate.getForEntity(any(URI.class), eq(String.class))).thenReturn(errorResponse);
+
+        assertThrows(RuntimeException.class, () -> weatherAPIService.getCurrentWeather("Prague"));
+
+        verify(restTemplate).getForEntity(any(URI.class), eq(String.class));
     }
 }

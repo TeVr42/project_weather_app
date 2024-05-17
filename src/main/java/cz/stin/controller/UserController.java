@@ -22,7 +22,7 @@ public class UserController {
     }
 
     public static boolean isAuthorized(HttpSession session) {
-        Object authorized = session.getAttribute("authorized");
+        Object authorized = session.getAttribute(Constants.ATTRIBUTE_AUTHORIZED);
         return authorized != null && (Boolean) authorized;
     }
 
@@ -31,11 +31,11 @@ public class UserController {
         if (isAuthorized(session)) {
             return "redirect:/";
         }
-        String message = (String) model.getAttribute("message");
+        String message = (String) model.getAttribute(Constants.ATTRIBUTE_MESSAGE);
         if (message != null) {
-            model.addAttribute("message", message);
+            model.addAttribute(Constants.ATTRIBUTE_MESSAGE, message);
         }
-        model.addAttribute("authorized", isAuthorized(session));
+        model.addAttribute(Constants.ATTRIBUTE_AUTHORIZED, isAuthorized(session));
         return "login";
     }
 
@@ -46,7 +46,7 @@ public class UserController {
             HttpSession session,
             Model model) {
 
-        model.addAttribute("authorized", isAuthorized(session));
+        model.addAttribute(Constants.ATTRIBUTE_AUTHORIZED, isAuthorized(session));
 
         if (!validateUsername(username, model) || !validatePassword(username, password, session, model)) {
             return "login";
@@ -57,13 +57,13 @@ public class UserController {
 
     private boolean validateUsername(String username, Model model) {
         if (!InputValidators.isValidUsername(username)) {
-            model.addAttribute("message", Constants.getMessageInvalidUsername());
+            model.addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageInvalidUsername());
             return false;
         }
 
         AppUser foundAppUser = userService.findUserByUsername(username);
         if (foundAppUser == null) {
-            model.addAttribute("message", Constants.getMessageUnknownUsername());
+            model.addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageUnknownUsername());
             return false;
         }
 
@@ -73,13 +73,13 @@ public class UserController {
     private boolean validatePassword(String username, String password, HttpSession session, Model model) {
         AppUser foundAppUser = userService.findUserByUsername(username);
         if (!foundAppUser.getPassword().equals(password)) {
-            session.setAttribute("authorized", false);
-            model.addAttribute("message", Constants.getMessageWrongPassword());
+            session.setAttribute(Constants.ATTRIBUTE_AUTHORIZED, false);
+            model.addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageWrongPassword());
             return false;
         }
 
-        session.setAttribute("authorized", true);
-        session.setAttribute("username", foundAppUser.getUsername());
+        session.setAttribute(Constants.ATTRIBUTE_AUTHORIZED, true);
+        session.setAttribute(Constants.ATTRIBUTE_USERNAME, foundAppUser.getUsername());
         return true;
     }
 
@@ -89,7 +89,7 @@ public class UserController {
         if (isAuthorized(session)) {
             return "redirect:/";
         }
-        model.addAttribute("authorized", isAuthorized(session));
+        model.addAttribute(Constants.ATTRIBUTE_AUTHORIZED, isAuthorized(session));
         return "register";
     }
 
@@ -102,7 +102,7 @@ public class UserController {
             Model model,
             RedirectAttributes redirectAttributes) {
 
-        model.addAttribute("authorized", isAuthorized(session));
+        model.addAttribute(Constants.ATTRIBUTE_AUTHORIZED, isAuthorized(session));
 
         if (!validateRegistration(username, password, cardNumber, model)) {
             return "register";
@@ -114,29 +114,29 @@ public class UserController {
         appUser.setCardNumber(cardNumber);
 
         userService.addUser(appUser);
-        redirectAttributes.addFlashAttribute("message", Constants.getMessageSuccessfulRegistration());
+        redirectAttributes.addFlashAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageSuccessfulRegistration());
         return "redirect:/prihlaseni";
     }
 
     private boolean validateRegistration(String username, String password, String cardNumber, Model model) {
         AppUser existingAppUser = userService.findUserByUsername(username);
         if (existingAppUser != null) {
-            model.addAttribute("message", Constants.getMessageAlreadyUsedUsername());
+            model.addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageAlreadyUsedUsername());
             return false;
         }
 
         if (!InputValidators.isValidUsername(username)) {
-            model.addAttribute("message", Constants.getMessageInvalidUsername());
+            model.addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageInvalidUsername());
             return false;
         }
 
         if (!InputValidators.isValidCardNumber(cardNumber)) {
-            model.addAttribute("message", Constants.getMessageInvalidCardNumber());
+            model.addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageInvalidCardNumber());
             return false;
         }
 
         if (!InputValidators.isValidPassword(password)) {
-            model.addAttribute("message", Constants.getMessageInvalidPassword());
+            model.addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageInvalidPassword());
             return false;
         }
 
@@ -145,8 +145,8 @@ public class UserController {
 
     @GetMapping("/odhlasit")
     public String logout(HttpSession session, Model model) {
-        session.setAttribute("authorized", false);
-        session.setAttribute("username", "");
+        session.setAttribute(Constants.ATTRIBUTE_AUTHORIZED, false);
+        session.setAttribute(Constants.ATTRIBUTE_USERNAME, "");
         return "redirect:/";
     }
 

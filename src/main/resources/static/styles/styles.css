@@ -64,8 +64,12 @@ p, th, td, .navbar-brand, .nav-item {
     font-size: 2.8rem;
 }
 
-.img-lock {
+.icon-actual-weather {
     width: 4rem;
+}
+
+.img-lock {
+    width: 4.5rem;
     border-radius: 100%;
 }
 

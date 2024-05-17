@@ -8,15 +8,16 @@ import cz.stin.model.AppUser;
 import cz.stin.model.Constants;
 import cz.stin.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
     @Mock
@@ -34,14 +35,9 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
     void testLoginWhenAuthorized() {
-        when(session.getAttribute("authorized")).thenReturn(true);
+        when(session.getAttribute(Constants.ATTRIBUTE_AUTHORIZED)).thenReturn(true);
 
         String result = userController.login(session, model);
 
@@ -50,24 +46,24 @@ class UserControllerTest {
 
     @Test
     void testLoginWithMessage() {
-        when(session.getAttribute("authorized")).thenReturn(false);
-        when(model.getAttribute("message")).thenReturn("Test message");
+        when(session.getAttribute(Constants.ATTRIBUTE_AUTHORIZED)).thenReturn(false);
+        when(model.getAttribute(Constants.ATTRIBUTE_MESSAGE)).thenReturn("Test message");
 
         String result = userController.login(session, model);
 
         assertEquals("login", result);
-        verify(model).addAttribute("message", "Test message");
+        verify(model).addAttribute(Constants.ATTRIBUTE_MESSAGE, "Test message");
     }
 
     @Test
     void testLoginWithoutMessage() {
-        when(session.getAttribute("authorized")).thenReturn(false);
-        when(model.getAttribute("message")).thenReturn(null);
+        when(session.getAttribute(Constants.ATTRIBUTE_AUTHORIZED)).thenReturn(false);
+        when(model.getAttribute(Constants.ATTRIBUTE_MESSAGE)).thenReturn(null);
 
         String result = userController.login(session, model);
 
         assertEquals("login", result);
-        verify(model, never()).addAttribute(eq("message"), anyString());
+        verify(model, never()).addAttribute(eq(Constants.ATTRIBUTE_MESSAGE), anyString());
     }
 
     @Test
@@ -84,8 +80,8 @@ class UserControllerTest {
 
         String result = userController.login(username, password, session, model);
 
-        verify(session).setAttribute("authorized", true);
-        verify(session).setAttribute("username", username);
+        verify(session).setAttribute(Constants.ATTRIBUTE_AUTHORIZED, true);
+        verify(session).setAttribute(Constants.ATTRIBUTE_USERNAME, username);
         assert result.equals("redirect:/");
     }
 
@@ -97,7 +93,7 @@ class UserControllerTest {
 
         String result = userController.login(username, password, session, model);
 
-        verify(model).addAttribute("authorized", false);
+        verify(model).addAttribute(Constants.ATTRIBUTE_AUTHORIZED, false);
         assert result.equals("login");
     }
 
@@ -116,8 +112,20 @@ class UserControllerTest {
 
         String result = userController.login(username, password, session, model);
 
-        verify(model).addAttribute("authorized", false);
+        verify(model).addAttribute(Constants.ATTRIBUTE_AUTHORIZED, false);
         assert result.equals("login");
+    }
+
+    @Test
+    void testLogin_UnknownUsername() {
+        when(userService.findUserByUsername(anyString())).thenReturn(null);
+        HttpSession session = mock(HttpSession.class);
+        Model model = mock(Model.class);
+
+        String result = userController.login("unknownUser", "password", session, model);
+
+        verify(model).addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageUnknownUsername());
+        assertEquals("login", result);
     }
 
     @Test
@@ -130,7 +138,7 @@ class UserControllerTest {
         String result = userController.register(username, password, cardNumber, session, model, redirectAttributes);
 
         verify(userService).addUser(any(AppUser.class));
-        verify(redirectAttributes).addFlashAttribute("message", Constants.getMessageSuccessfulRegistration());
+        verify(redirectAttributes).addFlashAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageSuccessfulRegistration());
         assert result.equals("redirect:/prihlaseni");
     }
 
@@ -150,7 +158,7 @@ class UserControllerTest {
 
         String result = userController.register(username, password, cardNumber, session, model, redirectAttributes);
 
-        verify(model).addAttribute("message", Constants.getMessageAlreadyUsedUsername());
+        verify(model).addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageAlreadyUsedUsername());
         assert result.equals("register");
     }
 
@@ -163,13 +171,13 @@ class UserControllerTest {
 
         String result = userController.register(username, password, cardNumber, session, model, redirectAttributes);
 
-        verify(model).addAttribute("message", Constants.getMessageInvalidUsername());
+        verify(model).addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageInvalidUsername());
         assert result.equals("register");
     }
 
     @Test
     void testRegisterWhenAuthorized() {
-        when(session.getAttribute("authorized")).thenReturn(true);
+        when(session.getAttribute(Constants.ATTRIBUTE_AUTHORIZED)).thenReturn(true);
 
         String result = userController.register(session, model);
 
@@ -178,24 +186,50 @@ class UserControllerTest {
 
     @Test
     void testRegisterWhenNotAuthorized() {
-        when(session.getAttribute("authorized")).thenReturn(false);
+        when(session.getAttribute(Constants.ATTRIBUTE_AUTHORIZED)).thenReturn(false);
 
         String result = userController.register(session, model);
 
         assertEquals("register", result);
-        verify(model).addAttribute("authorized", false);
+        verify(model).addAttribute(Constants.ATTRIBUTE_AUTHORIZED, false);
+    }
+
+    @Test
+    void testRegister_InvalidCardNumber() {
+        when(userService.findUserByUsername(anyString())).thenReturn(null);
+        HttpSession session = mock(HttpSession.class);
+        Model model = mock(Model.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
+        String result = userController.register("username", "password", "0000", session, model, redirectAttributes);
+
+        verify(model).addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageInvalidCardNumber());
+        assertEquals("register", result);
+    }
+
+    @Test
+    void testRegister_InvalidPassword() {
+        when(userService.findUserByUsername(anyString())).thenReturn(null);
+        HttpSession session = mock(HttpSession.class);
+        Model model = mock(Model.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
+        String result = userController.register("username", " 1", "0000000011112222", session, model, redirectAttributes);
+
+        verify(model).addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageInvalidPassword());
+        assertEquals("register", result);
     }
 
     @Test
     void testLogout() {
         MockHttpSession mockSession = new MockHttpSession();
-        mockSession.setAttribute("authorized", true);
-        mockSession.setAttribute("username", "testUser");
+        mockSession.setAttribute(Constants.ATTRIBUTE_AUTHORIZED, true);
+        mockSession.setAttribute(Constants.ATTRIBUTE_USERNAME, "testUser");
 
         String result = userController.logout(mockSession, model);
 
         assertEquals("redirect:/", result);
-        assertEquals(false, mockSession.getAttribute("authorized"));
-        assertEquals("", mockSession.getAttribute("username"));
+        assertEquals(false, mockSession.getAttribute(Constants.ATTRIBUTE_AUTHORIZED));
+        assertEquals("", mockSession.getAttribute(Constants.ATTRIBUTE_USERNAME));
     }
 }

@@ -24,7 +24,7 @@
     <strong><span th:text="${wmodel.getCurrent().getText()}"></span>
     <span th:text="${wmodel.getCurrent().getTemp_c()}"></span>°C</strong>
     <span>
-        <img th:src="@{${wmodel.getCurrent().getIcon()}}" alt="Weather Icon" />
+        <img th:src="@{${wmodel.getCurrent().getIcon()}}" class="icon-actual-weather" alt="Weather Icon" />
     </span>
 </p>
 
