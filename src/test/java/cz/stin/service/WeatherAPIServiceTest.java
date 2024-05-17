@@ -10,9 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 public class WeatherAPIServiceTest {
@@ -93,5 +96,15 @@ public class WeatherAPIServiceTest {
 
         assertNotNull(actualResponse);
         assertTrue(actualResponse.contains("Forecast weather data"));
+    }
+
+    @Test
+    void testGetWeatherData_HttpRequestFailed() {
+        ResponseEntity<String> errorResponse = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("");
+        when(restTemplate.getForEntity(any(URI.class), eq(String.class))).thenReturn(errorResponse);
+
+        assertThrows(RuntimeException.class, () -> weatherAPIService.getCurrentWeather("Prague"));
+
+        verify(restTemplate).getForEntity(any(URI.class), eq(String.class));
     }
 }

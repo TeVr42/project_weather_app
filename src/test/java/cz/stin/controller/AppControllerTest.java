@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AppControllerTest {
@@ -59,6 +58,20 @@ class AppControllerTest {
         assertEquals("index", result);
         verify(model).addAttribute(Constants.ATTRIBUTE_AUTHORIZED, true);
         verify(model).addAttribute(Constants.ATTRIBUTE_WEATHER_MODEL, weatherModel);
+    }
+
+    @Test
+    void testIndex_JsonProcessingException() throws JsonProcessingException {
+        when(forecastService.createWeatherModel(anyString())).thenThrow(JsonProcessingException.class);
+
+        HttpSession session = mock(HttpSession.class);
+        Model model = mock(Model.class);
+
+        String result = appController.index(session, model);
+
+        verify(model).addAttribute(Constants.ATTRIBUTE_ERROR_MESSAGE, Constants.getMessageProcessingMistake());
+
+        assertEquals("error", result);
     }
 
     @Test

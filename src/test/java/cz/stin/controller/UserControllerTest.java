@@ -117,6 +117,18 @@ class UserControllerTest {
     }
 
     @Test
+    void testLogin_UnknownUsername() {
+        when(userService.findUserByUsername(anyString())).thenReturn(null);
+        HttpSession session = mock(HttpSession.class);
+        Model model = mock(Model.class);
+
+        String result = userController.login("unknownUser", "password", session, model);
+
+        verify(model).addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageUnknownUsername());
+        assertEquals("login", result);
+    }
+
+    @Test
     void testRegisterWithValidInput() {
         MockHttpSession session = new MockHttpSession();
         String username = "newuser";
@@ -180,6 +192,32 @@ class UserControllerTest {
 
         assertEquals("register", result);
         verify(model).addAttribute(Constants.ATTRIBUTE_AUTHORIZED, false);
+    }
+
+    @Test
+    void testRegister_InvalidCardNumber() {
+        when(userService.findUserByUsername(anyString())).thenReturn(null);
+        HttpSession session = mock(HttpSession.class);
+        Model model = mock(Model.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
+        String result = userController.register("username", "password", "0000", session, model, redirectAttributes);
+
+        verify(model).addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageInvalidCardNumber());
+        assertEquals("register", result);
+    }
+
+    @Test
+    void testRegister_InvalidPassword() {
+        when(userService.findUserByUsername(anyString())).thenReturn(null);
+        HttpSession session = mock(HttpSession.class);
+        Model model = mock(Model.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
+        String result = userController.register("username", " 1", "0000000011112222", session, model, redirectAttributes);
+
+        verify(model).addAttribute(Constants.ATTRIBUTE_MESSAGE, Constants.getMessageInvalidPassword());
+        assertEquals("register", result);
     }
 
     @Test
